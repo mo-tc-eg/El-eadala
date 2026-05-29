@@ -88,7 +88,7 @@ body::after {
 }
 
 .header-logo {
-  height: 38px;
+  height: 48px;
   filter: brightness(0) invert(1);
 }
 
@@ -151,6 +151,9 @@ body::after {
 
 .home-logo-container {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .home-logo-ring {
@@ -175,12 +178,12 @@ body::after {
 }
 
 .home-logo {
-  width: 140px;
-  height: 140px;
+  width: 180px;
+  height: 180px;
   object-fit: contain;
   filter: brightness(0) invert(1) drop-shadow(0 0 30px rgba(192,57,43,0.4));
   position: relative;
-  top: -6px;
+  z-index: 2;
 }
 
 .home-hashtag {
@@ -1339,7 +1342,7 @@ body::after {
     border-left: none;
     border-top: 1px solid var(--glass-border);
   }
-  .home-logo { width: 110px; height: 110px; top: -4px; }
+  .home-logo { width: 140px; height: 140px; }
   .home-hashtag { font-size: 18px; }
   .content-container { padding: 24px 16px; }
   .suspects-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1361,24 +1364,19 @@ body::after {
 .material-icons { font-size: 20px; vertical-align: middle; }
 
 .watermark {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.2em;
   color: var(--gray-3);
   text-transform: uppercase;
-  z-index: 200;
-  pointer-events: none;
   font-weight: 600;
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 16px;
 }
 </style>
 </head>
 <body>
-
-<div class="watermark">جميع الحقوق محفوظة MoTc 2026</div>
 
 <div id="screen-home" class="screen active">
   <div class="home-bg"></div>
@@ -1399,6 +1397,7 @@ body::after {
       <span class="material-icons">help_outline</span>
       بتتلعب إزاي؟
     </button>
+    <div class="watermark">جميع الحقوق محفوظة MoTc 2026</div>
   </div>
 </div>
 
@@ -1423,6 +1422,7 @@ body::after {
         <p><strong>⏱️ النظام:</strong> في تايمر رئيسي للعبة، جلسات استجواب محدودة، وطعن رسمي واحد يغير مجرى التحقيق.</p>
       </div>
     </div>
+    <div class="watermark">جميع الحقوق محفوظة MoTc 2026</div>
   </div>
 </div>
 
@@ -1782,7 +1782,11 @@ function goToFingerprint() {
 }
 function assignRoles() { const n = state.suspects; let roles = (n === 2) ? ['criminal', 'innocent'] : ['criminal', 'partner', 'innocent']; for (let i = roles.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [roles[i], roles[j]] = [roles[j], roles[i]]; } while (roles.length < n) roles.push('innocent'); state.roles = roles.slice(0, n); }
 function showFpScanPhase() { document.getElementById('fp-phase-scan').classList.remove('hidden'); document.getElementById('fp-phase-result').classList.add('hidden'); const idx = state.fpCurrentIndex; const player = state.suspectData[idx]; document.getElementById('fp-player-indicator').textContent = `دور: ${player.name}`; document.getElementById('fp-outer').classList.remove('scanning'); document.getElementById('fp-icon').textContent = 'fingerprint'; }
-function startFpScan() { const outer = document.getElementById('fp-outer'); outer.classList.add('scanning'); setTimeout(() => { outer.classList.remove('scanning'); showFpResult(); }, 2200); }
+function startFpScan() { 
+  if (navigator.vibrate) navigator.vibrate(200);
+  const outer = document.getElementById('fp-outer'); outer.classList.add('scanning'); 
+  setTimeout(() => { outer.classList.remove('scanning'); showFpResult(); }, 2200); 
+}
 function showFpResult() {
   document.getElementById('fp-phase-scan').classList.add('hidden'); document.getElementById('fp-phase-result').classList.remove('hidden');
   const idx = state.fpCurrentIndex; const player = state.suspectData[idx]; const role = state.roles[idx]; const bs = generateBackstory(role, player.name, state.suspectData.map(s => s.name)); const isLast = (idx === state.suspects - 1);
